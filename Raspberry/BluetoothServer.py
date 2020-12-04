@@ -11,8 +11,7 @@ def get_bt_mac():
         return bt_mac.lower()
 
 
-a=open("/home/pi/Desktop/fichero","w")
-a.close()
+
 status,output=subprocess.getstatusoutput("sudo sdptool add --channel=22 SP")
 print(output)
 hostMACAddress = get_bt_mac() 
