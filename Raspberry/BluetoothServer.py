@@ -30,6 +30,10 @@ while(1):
 				while 1:
 						data = client.recv(size)
 						if data:
+								if(data=="killServer"):
+										client.close()
+										s.close()
+										exit()
 								print(data)
 								client.send(data)
 								
