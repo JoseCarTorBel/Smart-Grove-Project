@@ -32,6 +32,9 @@ while(1):
 						if data:
 								print(data)
 								client.send(data)
+								
+		except KeyboardInterrupt:
+       exit()
 		except: 
 				print("Raspberry> Cierro conexion")     
 				client.close()
