@@ -30,10 +30,10 @@ while(1):
 				while 1:
 						data = client.recv(size)
 						if data:
-								if(data=="killServer"):
-										client.close()
-										s.close()
-										exit()
+								if(("killServer" in data.decode("utf-8"))):
+									client.close()
+									s.close()
+									exit()
 								print(data)
 								client.send(data)
 								
@@ -42,7 +42,7 @@ while(1):
 					s.close()
 					exit()
 		except: 
-				print("Raspberry> Cierro conexion")     
+				print("Raspberry> Cierro conexion")
 				client.close()
 				#s.close()
 
