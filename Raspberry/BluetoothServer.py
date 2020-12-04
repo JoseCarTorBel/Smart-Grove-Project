@@ -22,15 +22,18 @@ size = 1024
 s = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM, socket.BTPROTO_RFCOMM)
 s.bind((hostMACAddress,port))
 s.listen(backlog)
-try:
-    client, address = s.accept()
-    while 1:
-        data = client.recv(size)
-        if data:
-            print(data)
-            client.send(data)
-except: 
-    print("Closing socket")     
-    client.close()
-    s.close()
+while(1):
+		try:
+				print("Raspberry> Espero conexion")
+				client, address = s.accept()
+				print("Raspberry> Conexion aceptada")
+				while 1:
+						data = client.recv(size)
+						if data:
+								print(data)
+								client.send(data)
+		except: 
+				print("Raspberry> Cierro conexion")     
+				client.close()
+				s.close()
 
