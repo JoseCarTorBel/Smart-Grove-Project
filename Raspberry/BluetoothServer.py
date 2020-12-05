@@ -31,7 +31,7 @@ while(1):
 	try:
 		logging.info(str(datetime.now())+" Raspberry> Espero conexion")
 		client, address = s.accept()
-		logging.info(str(datetime.now())+" Raspberry> Conexion aceptada de la direccion: "+address)
+		logging.info(str(datetime.now())+" Raspberry> Conexion aceptada de la direccion: "+str(address[0]))
 		while 1:
 			data = client.recv(size)
 			if data:
