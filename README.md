@@ -10,3 +10,50 @@ The objetive of this project are create mobile phone aplication for android and 
 All ESP32 have connected using ESP32 LoRa Wan networks, then, mobile phone have connected to ESP32 node using bluetooth. Also, phone upload data in excel google drive when it connects to esp32 main node.
 
 
+## Rapsberry configuring
+
+We used Raspbian SO and we have confiured SSH server on Raspberry.
+
+### Bluetoth server
+
+1. Install bluetooth packages:
+
+```
+sudo apt update
+sudo apt install bluetooth
+sudo apt install bluez
+sudo apt install python-bluez
+sudo apt install bluez-utils
+```
+2. The we pair ESP32 device
+```
+sudo bluetoothctl
+[bluetooth]# power on
+[bluetooth]# agent on
+[bluetooth]# discoverable on
+[bluetooth]# pairable on
+[bluetooth]# scan on
+[bluetooth]# pair <mac>
+[bluetooth]# paired-devices
+```
+
+3. Set the port
+```
+sudo sdptool add --channel=22 SP
+sudo sdptool browse local
+```
+If it gives an error we must configure the file /lib/systemd/system/bluetooth.service and we have to add -compat option as this:
+
+```
+ExecStart=/usr/lib/bluetooth/bluetoothd --compat
+```
+Then we execute:
+```
+sudo systemctl daemon-reload
+sudo systemctl restart bluetooth
+
+sudo chmod 777 /var/run/sdp
+sudo sdptool add --channel=22 SP
+```
+
+
