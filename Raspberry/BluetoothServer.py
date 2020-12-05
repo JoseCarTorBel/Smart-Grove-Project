@@ -9,7 +9,6 @@ def get_bt_mac():
         device_id = "hci0" 
         status, output = subprocess.getstatusoutput(cmd)
         bt_mac = output.split("{}:".format(device_id))[1].split("BD Address: ")[1].split(" ")[0].strip()
-        #print("Raspberry> Mac: " + bt_mac.lower())
         logging.info(str(datetime.now())+" Raspberry> Mac: " + bt_mac.lower())
         return bt_mac.lower()
 
@@ -30,11 +29,9 @@ s.bind((hostMACAddress,port))
 s.listen(backlog)
 while(1):
 	try:
-		#print("Raspberry> Espero conexion")
 		logging.info(str(datetime.now())+" Raspberry> Espero conexion")
 		client, address = s.accept()
-		#print("Raspberry> Conexion aceptada")
-		logging.info(str(datetime.now())+" Raspberry> Conexion aceptada")
+		logging.info(str(datetime.now())+" Raspberry> Conexion aceptada de la direccion: "+address)
 		while 1:
 			data = client.recv(size)
 			if data:
@@ -43,7 +40,6 @@ while(1):
 					s.close()
 					exit()
 				logging.info(str(datetime.now())+" Raspberry> Recibido: "+data.decode("utf-8"))
-				#print(data)
 				client.send(data)
 					
 	except KeyboardInterrupt:
