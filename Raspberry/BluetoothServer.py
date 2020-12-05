@@ -1,5 +1,6 @@
 import socket
 import subprocess
+import logging
 
 
 def get_bt_mac():
@@ -7,13 +8,17 @@ def get_bt_mac():
         device_id = "hci0" 
         status, output = subprocess.getstatusoutput(cmd)
         bt_mac = output.split("{}:".format(device_id))[1].split("BD Address: ")[1].split(" ")[0].strip()
-        print("Raspberry> Mac: " + bt_mac.lower())
+        #print("Raspberry> Mac: " + bt_mac.lower())
+        logging.info("Raspberry> Mac: " + bt_mac.lower())
         return bt_mac.lower()
 
 
 
+
+logging.basicConfig( level=logging.DEBUG, filename='/home/pi/Proyecto/Raspberry/Server.log')
+
 status,output=subprocess.getstatusoutput("sudo sdptool add --channel=22 SP")
-print(output)
+
 hostMACAddress = get_bt_mac() 
 
 port = 22
@@ -24,9 +29,11 @@ s.bind((hostMACAddress,port))
 s.listen(backlog)
 while(1):
 		try:
-				print("Raspberry> Espero conexion")
+				#print("Raspberry> Espero conexion")
+				logging.info("Raspberry> Espero conexion")
 				client, address = s.accept()
-				print("Raspberry> Conexion aceptada")
+				#print("Raspberry> Conexion aceptada")
+				logging.info("Raspberry> Conexion aceptada")
 				while 1:
 						data = client.recv(size)
 						if data:
@@ -34,7 +41,8 @@ while(1):
 									client.close()
 									s.close()
 									exit()
-								print(data)
+								logging.info("Raspberry> Recibido: "+data)
+								#print(data)
 								client.send(data)
 								
 		except KeyboardInterrupt:
@@ -42,7 +50,8 @@ while(1):
 					s.close()
 					exit()
 		except: 
-				print("Raspberry> Cierro conexion")
+				#print("Raspberry> Cierro conexion")
+				logging.info("Raspberry> Cierro conexion")
 				client.close()
 				#s.close()
 
