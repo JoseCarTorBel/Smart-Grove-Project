@@ -13,6 +13,8 @@ def get_bt_mac():
         return bt_mac.lower()
 
 
+def emparejar(dirMac):
+	pass
 
 
 logging.basicConfig( level=logging.DEBUG, filename='/home/pi/Proyecto/Raspberry/Server.log')
@@ -27,22 +29,32 @@ size = 1024
 s = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM, socket.BTPROTO_RFCOMM)
 s.bind((hostMACAddress,port))
 s.listen(backlog)
+logging.info("=========================================================================")
 while(1):
 	try:
+		logging.info("----------------------------------------------------")
 		logging.info(str(datetime.now())+" Raspberry> Espero conexion")
 		client, address = s.accept()
 		logging.info(str(datetime.now())+" Raspberry> Conexion aceptada de la direccion: "+str(address[0]))
+		client.send("Para parar conexion usa el comando: killServer\n".encode("UTF-8"))
 		while 1:
 			data = client.recv(size)
 			if data:
-				if(("killServer" in data.decode("utf-8"))):
+				strData = data.decode("utf-8")
+				logging.info(str(datetime.now())+" Raspberry> Recibido: "+strData)
+
+				if("MAC=" in strData):
+					emparejar(strData.split("=")[1])
+				if(("killServer" in strData)):
+					client.send("PARANDO SERVIDOR".encode("utf-8"))
+					logging.info(str(datetime.now())+" Raspberry> Cierro conexion (killServer)")
 					client.close()
 					s.close()
 					exit()
-				logging.info(str(datetime.now())+" Raspberry> Recibido: "+data.decode("utf-8"))
-				client.send(data)
+				client.send("ACK\n".encode("utf-8"))
 					
 	except KeyboardInterrupt:
+		logging.info(str(datetime.now())+" Raspberry> Cierro conexion (CTRL-C)")
 		client.close()
 		s.close()
 		exit()
