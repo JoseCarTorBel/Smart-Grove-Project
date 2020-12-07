@@ -56,4 +56,7 @@ sudo chmod 777 /var/run/sdp
 sudo sdptool add --channel=22 SP
 ```
 
+## Configuring Arduino IDE for ESP32
+
+We follow [this tutoria](https://randomnerdtutorials.com/installing-the-esp32-board-in-arduino-ide-windows-instructions/) and it is working.
 
