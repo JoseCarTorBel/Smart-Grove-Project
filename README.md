@@ -13,6 +13,7 @@ All ESP32 have connected using ESP32 LoRa Wan networks, then, mobile phone have 
 
 * Raspberry Pi with Raspbian SO.
 * ESP32 TTGO with Lora, Wifi and bluetooth.
+* Google Drive library for excel
 
 ## Rapsberry configuring
 
@@ -63,4 +64,8 @@ sudo sdptool add --channel=22 SP
 ## Configuring Arduino IDE for ESP32
 
 We follow [this tutorial](https://randomnerdtutorials.com/ttgo-lora32-sx1276-arduino-ide/) and it is working.
+
+## Authors
+
+This project are made by [Joaquín Gonlález](https://www.linkedin.com/in/joaquin-gonzalez-alvarez-52b234114/) and [Jose  Carlos Torró](https://www.linkedin.com/in/jose-carlos-torr%C3%B3-a94b67194/) 
 
