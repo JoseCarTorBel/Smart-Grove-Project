@@ -9,6 +9,10 @@ The objetive of this project are create mobile phone aplication for android and 
 
 All ESP32 have connected using ESP32 LoRa Wan networks, then, mobile phone have connected to ESP32 node using bluetooth. Also, phone upload data in excel google drive when it connects to esp32 main node.
 
+## Matherials
+
+* Raspberry Pi with Raspbian SO.
+* ESP32 TTGO with Lora, Wifi and bluetooth.
 
 ## Rapsberry configuring
 
@@ -58,5 +62,5 @@ sudo sdptool add --channel=22 SP
 
 ## Configuring Arduino IDE for ESP32
 
-We follow [this tutoria](https://randomnerdtutorials.com/installing-the-esp32-board-in-arduino-ide-windows-instructions/) and it is working.
+We follow [this tutorial](https://randomnerdtutorials.com/ttgo-lora32-sx1276-arduino-ide/) and it is working.
 
