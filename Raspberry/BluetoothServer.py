@@ -21,7 +21,7 @@ def emparejar(dirMac):
 
 
 lcd=I2C_LCD_driver.lcd()
-logging.basicConfig( level=logging.DEBUG, filename='/home/pi/Proyecto/Raspberry/Server.log')
+logging.basicConfig( level=logging.DEBUG, filename='/home/pi/SmartGrove/Raspberry/Server.log')
 
 status,output=subprocess.getstatusoutput("sudo sdptool add --channel=22 SP")
 
