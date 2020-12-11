@@ -20,9 +20,7 @@
 #define RST 14
 #define DIO0 26
 
-//433E6 for Asia
 //866E6 for Europe
-//915E6 for North America
 #define BAND 866E6
 
 //OLED pins
@@ -35,6 +33,8 @@
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RST);
 
 String LoRaData;
+
+using namespace std;
 
 void setup() { 
   
@@ -88,14 +88,27 @@ void loop() {
 
     //read packet
     while (LoRa.available()) {
+     
       LoRaData = LoRa.readString();
+      Serial.print("data"); 
       Serial.print(LoRaData);
     }
 
+    volatile char separador = '#';
+    String temperature = LoRaData.substring(0, LoRaData.indexOf(separador));
+//    LoRaData = LoRaData.substring(LoRaData.length() + 1);
+
+    String humidity = LoRaData.substring(LoRaData.indexOf(separador)+1);
+
+    Serial.println("");
+    Serial.println(temperature); Serial.println(humidity);
+    
+    
     //print RSSI of packet
     int rssi = LoRa.packetRssi();
     Serial.print(" with RSSI ");    
     Serial.println(rssi);
+
 
    // Dsiplay information
    display.clearDisplay();
@@ -104,11 +117,16 @@ void loop() {
    display.setCursor(0,20);
    display.print("Received packet:");
    display.setCursor(0,30);
-   display.print(LoRaData);
+   display.print("Temperature: ");display.print(temperature); display.print(" *C");
    display.setCursor(0,40);
-   display.print("RSSI:");
-   display.setCursor(30,40);
-   display.print(rssi);
+   display.print("Humity: ");display.print(humidity); display.println(" %");
+   display.setCursor(0,40);
+//   display.print("RSSI:");
+//   display.setCursor(30,40);
+//   display.print(rssi);
    display.display();   
   }
 }
+
+
+  
