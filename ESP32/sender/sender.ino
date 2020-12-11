@@ -1,11 +1,12 @@
-/*********
-  Rui Santos
-  Complete project details at https://RandomNerdTutorials.com/ttgo-lora32-sx1276-arduino-ide/
-*********/
 
 //Libraries for LoRa
 #include <SPI.h>
 #include <LoRa.h>
+
+#include <SimpleDHT.h>
+int pinDHT11 = 16;
+SimpleDHT11 dht11;
+//
 
 //Libraries for OLED Display
 #include <Wire.h>
@@ -81,29 +82,61 @@ void setup() {
 }
 
 void loop() {
-   
-  Serial.print("Sending packet: ");
-  Serial.println(counter);
-
-  //Send LoRa packet to receiver
-  LoRa.beginPacket();
-  LoRa.print("hello ");
-  LoRa.print(counter);
-  LoRa.endPacket();
   
+
+
+ // read with raw sample datos.
+  byte temperature = 0;
+  byte humidity = 0;
+  byte datas[40] = {0};
+//
+  display.clearDisplay();
+   display.setCursor(0,0);
+   display.println("Esto no va");
+   display.display();
+   
+    delay(1000);
+  if (dht11.read(pinDHT11, &temperature, &humidity, datas)) {
+    display.clearDisplay();
+    display.setCursor(0,0);
+    display.println("Read DHT11 failed");
+    display.display();
+    return;
+  }
+
+  //dht11.read(pinDHT11, &temperature, &humidity, datas);
   display.clearDisplay();
   display.setCursor(0,0);
   display.println("LORA SENDER");
   display.setCursor(0,20);
   display.setTextSize(1);
-  display.print("LoRa packet sent.");
+  display.print((int)temperature); display.print("*C, ");
+    
   display.setCursor(0,30);
-  display.print("Counter:");
-  display.setCursor(50,30);
-  display.print(counter);      
+  display.print((int)humidity); display.println(" %");
   display.display();
+  
+  // LoRa Send packet
+  LoRa.beginPacket();
+  LoRa.print(temperature);
+  LoRa.print("#");
+  LoRa.print(humidity);
+  LoRa.endPacket();
+  
+  
+//  display.clearDisplay();
+//  display.setCursor(0,0);
+//  display.println("LORA SENDER");
+//  display.setCursor(0,20);
+//  display.setTextSize(1);
+//  display.print("LoRa packet sent.");
+//  display.setCursor(0,30);
+//  display.print("Counter:");
+//  display.setCursor(50,30);
+//  display.print(counter);      
+//  display.display();
 
   counter++;
   
-  delay(10000);
+  delay(1000);
 }
