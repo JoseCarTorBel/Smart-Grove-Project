@@ -30,5 +30,5 @@ creds = ServiceAccountCredentials.from_json_keyfile_name('client_secret.json', s
 client = gspread.authorize(creds)
 
 sheet = client.open("ProyectoHuertos").sheet1
-
+setValue(sheet,10,1,"Hola")
 
