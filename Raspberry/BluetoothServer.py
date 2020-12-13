@@ -22,16 +22,17 @@ def emparejar(dirMac):
 lcd=I2C_LCD_driver.lcd()
 logging.basicConfig( level=logging.DEBUG, filename='/home/pi/SmartGrove/Raspberry/Server.log')
 
-status,output=subprocess.getstatusoutput("sudo sdptool add --channel=22 SP")
+status,output=subprocess.getstatusoutput("sudo sdptool add --channel=1 SP")
 
 hostMACAddress = get_bt_mac() 
 
-port = 22
+port = 1
 backlog = 1
 size = 1024
 s = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM, socket.BTPROTO_RFCOMM)
 s.bind((hostMACAddress,port))
 s.listen(backlog)
+
 logging.info("=========================================================================")
 while(1):
 	try:
