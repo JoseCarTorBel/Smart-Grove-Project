@@ -38,9 +38,9 @@ class GoogleDrive:
 		self.setRow(fila,self.getFirstRowEmpty())
 	def insertRows(self,matriz):
 		inicio=self.getFirstRowEmpty()
-		fin=len(matriz)
-		up="A"+inicio+":C"+fin
-		self.sheet.update('A1:C2', matriz)
+		fin=inicio+len(matriz)
+		up="A"+str(inicio)+":C"+str(fin)
+		self.sheet.update(up, matriz)
 	
 
 #scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']

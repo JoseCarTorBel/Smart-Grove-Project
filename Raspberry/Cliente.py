@@ -50,11 +50,9 @@ while(1):
 		lcd.lcd_display_strings(str(datetime.now()), "ESPERANDO AL CLIENTE")
 		logging.info(str(datetime.now())+" Raspberry> Intento conectarme al ESP32")
 
-		#s.connect((serverMACAddress,port))
+		s.connect((serverMACAddress,port))
 		while 1:
-			#data = s.recv(size)
-			sleep(1)
-			data="21#60"
+			data = s.recv(size)
 			if data:
 				strData = data.decode("UTF-8")
 				if('#' in strData):
@@ -63,20 +61,17 @@ while(1):
 
 					logging.info(str(datetime.now())+" Raspberry> Recibido: "+strData)
 					lcd.lcd_display_strings(str(datetime.now()), str(strData))
-					#s.send("ACK\n".encode("utf-8"))
-
-					if(tramas%10==0):
-						print(tramas)
-						aux=10
+					s.send("ACK\n".encode("utf-8"))
+					grupo=20
+					if(tramas%grupo==0):
+						aux=grupo
 						enviar=[]
-						while(aux>=0):
+						while(aux>0):
 							enviar.append(recibido[tramas-aux].getTrama())
 							aux-=1
-						print(enviar)
-						#goodr.insertRows(enviar)
-						
+						goodr.insertRows(enviar)
+						logging.info(str(datetime.now())+" Raspberry> Subo datos al servidor")
 
-					
 		s.close() #fin while
 
 	except KeyboardInterrupt:
