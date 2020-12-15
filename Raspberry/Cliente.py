@@ -16,13 +16,28 @@ logging.basicConfig( level=logging.DEBUG, filename='/home/pi/SmartGrove/Raspberr
 
 serverMACAddress = 'F0:08:D1:C8:DB:FE'
 
+
+
+class Trama:
+	hora=""
+	temperatura=""
+	humedad=""
+	def __init__(self,hor,tem,hum):
+		self.hora=hor
+		self.temperatura=tem
+		self.humedad=hum
+	def getTrama(self):
+		return [self.hora,self.temperatura,self.humedad]
+
+
 port = 1
 size=1024
 logging.info("=========================================================================")
 while(1):
+	recibido=[]
+	tramas=0
 	try:
 		s = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM, socket.BTPROTO_RFCOMM)
-
 		logging.info("----------------------------------------------------")
 		lcd.lcd_display_strings(str(datetime.now()), "ESPERANDO AL CLIENTE")
 		logging.info(str(datetime.now())+" Raspberry> Intento conectarme al ESP32")
@@ -32,9 +47,14 @@ while(1):
 			if data:
 				strData = data.decode("UTF-8")
 				if('#' in strData):
+					recibido.append(Trama(str(datetime.now()),strData.split("#")[0],strData.split("#")[1]))
+					tramas+=1
+					if(tramas%2==0):
+						goodr.insertRow(recibido[tramas-1].getTrama())
+						goodr.insertRow(recibido[tramas-2].getTrama())
+
 					logging.info(str(datetime.now())+" Raspberry> Recibido: "+strData)
 					lcd.lcd_display_strings(str(datetime.now()), str(strData))
-					#goodr.insertRow([strData])
 					s.send("ACK\n".encode("utf-8"))
 		s.close()
 	except KeyboardInterrupt:
