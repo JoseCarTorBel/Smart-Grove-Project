@@ -22,7 +22,6 @@ class GoogleDrive:
 
 	def getValue(self,fila,columna):
 		return self.sheet.cell(fila, columna).value
-
 	def setValue(self,fila,columna,valor):
 		self.sheet.update_cell(fila, columna, valor)
 	
@@ -37,6 +36,11 @@ class GoogleDrive:
 			i+=1
 	def insertRow(self,fila):
 		self.setRow(fila,self.getFirstRowEmpty())
+	def insertRows(self,matriz):
+		inicio=self.getFirstRowEmpty()
+		fin=len(matriz)
+		up="A"+inicio+":C"+fin
+		self.sheet.update('A1:C2', matriz)
 	
 
 #scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
