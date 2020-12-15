@@ -5,6 +5,8 @@ from datetime import datetime
 import I2C_LCD_driver
 from time import *
 
+DEPRECATED
+
 
 def get_bt_mac():
         cmd = "hciconfig"
