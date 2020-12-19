@@ -11,9 +11,13 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
@@ -23,10 +27,13 @@ public class MainActivity extends AppCompatActivity {
     Button descargar;
     RequestQueue requestQueue;
 
+    Almacen almacen;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        almacen = new Almacen();
 
         recibido = (TextView) findViewById(R.id.recibido);
         descargar = (Button) findViewById(R.id.descargar);
@@ -54,8 +61,54 @@ public class MainActivity extends AppCompatActivity {
         requestQueue.add(request);
     }
 
+    private void jsonArrayRequest(){
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
+                Request.Method.GET,
+                urlGoogle,
+                null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        int size = response.length();
+                        for(int i=0;i<size;i++){
+                            try {
+                                JSONObject jsonObject = new JSONObject(response.get(i).toString());
+                                String fecha = jsonObject.getString("Fecha");
+                                int temperatura = Integer.parseInt(jsonObject.getString("Temperatura"));
+                                int humedad = Integer.parseInt(jsonObject.getString("Humedad"));
+                                Muestra muestra = new Muestra(fecha,temperatura,humedad);
+                                almacen.addMuestra(muestra);
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        muestraDatos();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }
+        );
+        requestQueue.add(jsonArrayRequest);
+    }
+
+
+    public void muestraDatos(){
+        recibido.setText("");
+        for(Muestra muestra:almacen.getMuestras()){
+            recibido.append(muestra.getFecha()+"\n");
+            recibido.append(muestra.getTemperatura()+"\n");
+            recibido.append(muestra.getHumedad()+"\n");
+            recibido.append("------------------------------\n");
+        }
+    }
 
     public void onClickDescargarDatos(View view){
-        stringRequest();
+        jsonArrayRequest();
     }
+
 }
