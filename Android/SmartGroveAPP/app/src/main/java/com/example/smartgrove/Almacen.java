@@ -20,7 +20,7 @@ public class Almacen {
     }
 
     public void addMuestra(Muestra muestra){
-        this.almacen.put(muestra.getFecha(),muestra);
+        this.almacen.put(muestra.getFecha().toString(),muestra);
     }
 
     public void removeMuestra(String fecha){
@@ -38,13 +38,5 @@ public class Almacen {
         }
         return array;
     }
-
-
-    //TODO metodos que te dem muestra en un intervalo de fechas
-    //TODO en MUESTRA convertir fecha (string) a datatime
-
-
-
-
 
 }

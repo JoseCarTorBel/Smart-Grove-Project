@@ -2,9 +2,12 @@ package com.example.smartgrove;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -18,7 +21,8 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
+
+import java.text.ParseException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,6 +33,9 @@ public class MainActivity extends AppCompatActivity {
 
     Almacen almacen;
 
+    EditText inicioFecha;
+    EditText finFecha;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +45,45 @@ public class MainActivity extends AppCompatActivity {
         recibido = (TextView) findViewById(R.id.recibido);
         descargar = (Button) findViewById(R.id.descargar);
         requestQueue = Volley.newRequestQueue(this);
+
+        inicioFecha = (EditText) findViewById(R.id.inicioFecha);
+        finFecha = (EditText) findViewById(R.id.finFecha);
+    }
+
+    public void onClickFechaInicio(View view){
+        showDatePickerDialogInicio();
+    }
+
+    public void onClickFechaFin(View view){
+        showDatePickerDialogFin();
+    }
+
+    private void showDatePickerDialogInicio() {
+        DatePickerFragment newFragment = DatePickerFragment.newInstance(new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                // +1 because January is zero
+                final String selectedDate = day + " / " + (month+1) + " / " + year;
+                inicioFecha.setText(selectedDate);
+            }
+        });
+
+
+
+        newFragment.show(this.getSupportFragmentManager(), "datePicker");
+    }
+
+    private void showDatePickerDialogFin() {
+        DatePickerFragment newFragment = DatePickerFragment.newInstance(new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                // +1 because January is zero
+                final String selectedDate = day + " / " + (month+1) + " / " + year;
+                finFecha.setText(selectedDate);
+            }
+        });
+
+        newFragment.show(this.getSupportFragmentManager(), "datePicker");
     }
 
     private void stringRequest(){
@@ -79,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
                                 Muestra muestra = new Muestra(fecha,temperatura,humedad);
                                 almacen.addMuestra(muestra);
 
-                            } catch (JSONException e) {
+                            } catch (JSONException | ParseException e) {
                                 e.printStackTrace();
                             }
                         }
