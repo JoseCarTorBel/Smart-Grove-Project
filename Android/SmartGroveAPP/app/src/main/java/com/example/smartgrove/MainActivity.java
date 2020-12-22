@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -23,6 +24,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
     EditText inicioFecha;
     EditText finFecha;
 
+    ProgressBar barraProgreso;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +55,12 @@ public class MainActivity extends AppCompatActivity {
 
         inicioFecha = (EditText) findViewById(R.id.inicioFecha);
         finFecha = (EditText) findViewById(R.id.finFecha);
+
+        barraProgreso = (ProgressBar) findViewById(R.id.progressBar);
+        barraProgreso.setProgress(0);
+
+        inicioFecha.setText("22/12/2020");
+        finFecha.setText("22/12/2021");
     }
 
     public void onClickFechaInicio(View view){
@@ -63,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
                 // +1 because January is zero
-                final String selectedDate = day + " / " + (month+1) + " / " + year;
+                final String selectedDate = day + "/" + (month+1) + "/" + year;
                 inicioFecha.setText(selectedDate);
             }
         });
@@ -77,8 +90,7 @@ public class MainActivity extends AppCompatActivity {
         DatePickerFragment newFragment = DatePickerFragment.newInstance(new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                // +1 because January is zero
-                final String selectedDate = day + " / " + (month+1) + " / " + year;
+                final String selectedDate = day + "/" + (month+1) + "/" + year;
                 finFecha.setText(selectedDate);
             }
         });
@@ -118,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
                         int size = response.length();
                         for(int i=0;i<size;i++){
                             try {
+                                barraProgreso.setProgress(barraProgreso.getProgress()+70);
                                 JSONObject jsonObject = new JSONObject(response.get(i).toString());
                                 String fecha = jsonObject.getString("Fecha");
                                 int temperatura = Integer.parseInt(jsonObject.getString("Temperatura"));
@@ -129,7 +142,19 @@ public class MainActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                         }
-                        muestraDatos();
+                        //muestraDatos();
+                        SimpleDateFormat formatter=new SimpleDateFormat("dd/MM/yyyy");
+                        Date inicio = null;
+                        Date fin = null;
+                        try {
+                             inicio = formatter.parse(inicioFecha.getText().toString());
+                             fin = formatter.parse(finFecha.getText().toString());
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                            return;
+                        }
+                        ArrayList<Muestra> lista = getDatosIntervalo(inicio,fin);
+                        //TODO AQUI LLAMAR METODO HACER LA GRAFICA
                     }
                 },
                 new Response.ErrorListener() {
@@ -139,7 +164,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
+        barraProgreso.setProgress(20);
         requestQueue.add(jsonArrayRequest);
+        barraProgreso.setProgress(30);
     }
 
 
@@ -153,7 +180,23 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public ArrayList<Muestra> getDatosIntervalo(Date fechaIni, Date fechaFin){
+        recibido.setText("");
+       ArrayList<Muestra> lista = new ArrayList<Muestra>();
+        for(Muestra muestra:almacen.getMuestras()){
+            if(muestra.getFecha().before(fechaFin) && muestra.getFecha().after(fechaIni)) {
+                recibido.append(muestra.getFecha() + "\n");
+                recibido.append(muestra.getTemperatura() + "\n");
+                recibido.append(muestra.getHumedad() + "\n");
+                recibido.append("------------------------------\n");
+                lista.add(muestra);
+            }
+        }
+        return lista;
+    }
+
     public void onClickDescargarDatos(View view){
+        barraProgreso.setProgress(10);
         jsonArrayRequest();
     }
 
