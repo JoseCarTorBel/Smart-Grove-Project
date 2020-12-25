@@ -35,4 +35,6 @@ public class Muestra {
     public void setHumedad(int humedad) {
         this.humedad = humedad;
     }
+
+
 }

@@ -1,5 +1,6 @@
 package com.example.smartgrove;
 
+import android.graphics;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -98,6 +99,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void muestraDatos(){
+
+
         recibido.setText("");
         for(Muestra muestra:almacen.getMuestras()){
             recibido.append(muestra.getFecha()+"\n");
@@ -109,6 +112,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClickDescargarDatos(View view){
         jsonArrayRequest();
+    }
+
+
+
+    private void creaGraficas(){
+
     }
 
 }
