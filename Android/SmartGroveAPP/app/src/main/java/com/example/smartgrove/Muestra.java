@@ -1,23 +1,29 @@
 package com.example.smartgrove;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class Muestra {
 
-    private String fecha;
+
+    SimpleDateFormat formatter=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    private Date fecha;
     private int temperatura;
     private int humedad;
 
-    public Muestra(String fecha, int temperatura, int humedad) {
-        this.fecha = fecha;
+    public Muestra(String fecha, int temperatura, int humedad) throws ParseException {
+        this.fecha = formatter.parse(fecha);
         this.temperatura = temperatura;
         this.humedad = humedad;
     }
 
-    public String getFecha() {
+    public Date getFecha() {
         return fecha;
     }
 
-    public void setFecha(String fecha) {
-        this.fecha = fecha;
+    public void setFecha(String fecha) throws ParseException {
+        formatter.parse(fecha);
     }
 
     public int getTemperatura() {
