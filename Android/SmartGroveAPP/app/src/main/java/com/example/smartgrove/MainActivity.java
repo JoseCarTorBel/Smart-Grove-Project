@@ -1,10 +1,12 @@
 package com.example.smartgrove;
 
-import android.graphics;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -19,6 +21,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,19 +36,24 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+
+
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MyActivity";
 
-    String urlGoogle = "https://script.googleusercontent.com/macros/echo?user_content_key=hfautCUoMpL7vTfTZKvbL3tP2Kbnt12m-G4bYscxlI_V81lEcHYLi440z9Gwv0fP65Xs_1Honef3-N-r-I47Skg6RWzFXbZ4m5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnBFiRF860KCpoZ4E0XPSsTar_QXW9Bz817n-n-h8NY7IYJnhzk8SktW1HxiHj3sYOiannw6BiFb7&lib=MaI25Xl4VUYQKa9FPNAK_RnOWC6KqnnsA";
-    TextView recibido;
-    Button descargar;
-    RequestQueue requestQueue;
+    private LineChart lineChart;
 
-    Almacen almacen;
+    private String urlGoogle = "https://script.googleusercontent.com/macros/echo?user_content_key=hfautCUoMpL7vTfTZKvbL3tP2Kbnt12m-G4bYscxlI_V81lEcHYLi440z9Gwv0fP65Xs_1Honef3-N-r-I47Skg6RWzFXbZ4m5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnBFiRF860KCpoZ4E0XPSsTar_QXW9Bz817n-n-h8NY7IYJnhzk8SktW1HxiHj3sYOiannw6BiFb7&lib=MaI25Xl4VUYQKa9FPNAK_RnOWC6KqnnsA";
+    private TextView recibido;
+    private Button descargar;
+    private RequestQueue requestQueue;
 
-    EditText inicioFecha;
-    EditText finFecha;
+    private Almacen almacen;
 
-    ProgressBar barraProgreso;
+    private EditText inicioFecha, finFecha;
+
+    private ProgressBar barraProgreso;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
 
         inicioFecha.setText("22/12/2020");
         finFecha.setText("22/12/2021");
+
+        lineChart = findViewById(R.id.lineChart);
     }
 
     public void onClickFechaInicio(View view){
@@ -150,12 +163,13 @@ public class MainActivity extends AppCompatActivity {
                         try {
                              inicio = formatter.parse(inicioFecha.getText().toString());
                              fin = formatter.parse(finFecha.getText().toString());
+                            //creaGraficas(inicio,fin);
                         } catch (ParseException e) {
                             e.printStackTrace();
                             return;
                         }
-                        ArrayList<Muestra> lista = getDatosIntervalo(inicio,fin);
-                        //TODO AQUI LLAMAR METODO HACER LA GRAFICA
+                        //ArrayList<Muestra> lista = getDatosIntervalo(inicio,fin);
+                        creaGraficas(inicio, fin);
                     }
                 },
                 new Response.ErrorListener() {
@@ -173,7 +187,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void muestraDatos(){
 
-
         recibido.setText("");
         for(Muestra muestra:almacen.getMuestras()){
             recibido.append(muestra.getFecha()+"\n");
@@ -188,10 +201,10 @@ public class MainActivity extends AppCompatActivity {
        ArrayList<Muestra> lista = new ArrayList<Muestra>();
         for(Muestra muestra:almacen.getMuestras()){
             if(muestra.getFecha().before(fechaFin) && muestra.getFecha().after(fechaIni)) {
-                recibido.append(muestra.getFecha() + "\n");
-                recibido.append(muestra.getTemperatura() + "\n");
-                recibido.append(muestra.getHumedad() + "\n");
-                recibido.append("------------------------------\n");
+//                recibido.append(muestra.getFecha() + "\n");
+//                recibido.append(muestra.getTemperatura() + "\n");
+//                recibido.append(muestra.getHumedad() + "\n");
+//                recibido.append("------------------------------\n");
                 lista.add(muestra);
             }
         }
@@ -203,10 +216,41 @@ public class MainActivity extends AppCompatActivity {
         jsonArrayRequest();
     }
 
+    /**
+     *
+     * @param fechaIni  Fecha inicio del intervalo a mostrar
+     * @param fechaFin  Fecha de fin del intervalo a mostrar
+     */
+    @SuppressLint("WrongConstant")
+    private void creaGraficas(Date fechaIni, Date fechaFin){
+        ArrayList<Muestra> datos = getDatosIntervalo(fechaIni, fechaFin);
+        ArrayList<Entry>  lineEntriesTemperatura = new ArrayList<Entry>();
+        ArrayList<Entry> lineEntriesHumedad = new ArrayList<Entry>();
 
 
-    private void creaGraficas(){
+
+        for(int i = 0; i < datos.size(); i++) {
+              lineEntriesTemperatura.add(new Entry((float) datos.get(i).getFecha().getTime(), (float) datos.get(i).getTemperatura()));
+              lineEntriesHumedad.add(new Entry((float)datos.get(i).getFecha().getTime(), (float) datos.get(i).getHumedad()));
+        }
+
+
+        Log.i(TAG, "Linea temperatura" + lineEntriesTemperatura.toString());
+        Log.i(TAG, "Linea Humedad" + lineEntriesHumedad.toString());
+
+        LineDataSet lineDataSetTemperatura = new LineDataSet(lineEntriesTemperatura, "Temperatura");
+        lineDataSetTemperatura.setCircleColor((int)Color.RED);
+
+        LineDataSet lineDataSetHumedad = new LineDataSet(lineEntriesHumedad, "Humedad");
+
+
+        LineData lineData = new LineData();
+        lineData.addDataSet(lineDataSetTemperatura);
+        lineData.addDataSet(lineDataSetHumedad);
+
+        lineChart.setData(lineData);
+
+
 
     }
-
 }
