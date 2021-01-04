@@ -233,30 +233,24 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<Entry>  lineEntriesTemperatura = new ArrayList<Entry>();
         ArrayList<Entry> lineEntriesHumedad = new ArrayList<Entry>();
 
- //       float tiempo_referencia =  (float) datos.get(0).getFecha().getTime();
-        float tiempoOld,tiempoNew;
+        float tiempo;
 
         for(int i = 0; i < datos.size(); i++) {
 
-            tiempoOld = (float) datos.get(i).getFecha().getTime();
-            lineEntriesTemperatura.add(new Entry(tiempoOld, (float) datos.get(i).getTemperatura()));
-            lineEntriesHumedad.add(new Entry(tiempoOld, (float) datos.get(i).getHumedad()));
+            tiempo = (float) datos.get(i).getFecha().getTime();
+            lineEntriesTemperatura.add(new Entry(tiempo, (float) datos.get(i).getTemperatura()));
+            lineEntriesHumedad.add(new Entry(tiempo, (float) datos.get(i).getHumedad()));
         }
-
 
         Log.i(TAG, "Linea temperatura" + lineEntriesTemperatura.toString());
         Log.i(TAG, "Linea Humedad" + lineEntriesHumedad.toString());
 
-
         LineDataSet lineDataSetTemperatura = new LineDataSet(lineEntriesTemperatura, "Temperatura");
         lineDataSetTemperatura.setCircleColor(Color.RED);
         lineDataSetTemperatura.setValueTextColor(Color.RED);
-       // lineDataSetTemperatura.addColor(Color.RED);
         lineDataSetTemperatura.setColor(Color.RED);
 
         LineDataSet lineDataSetHumedad = new LineDataSet(lineEntriesHumedad, "Humedad");
-
-
         LineData lineData = new LineData();
         lineData.addDataSet(lineDataSetTemperatura);
         lineData.addDataSet(lineDataSetHumedad);
