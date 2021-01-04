@@ -35,6 +35,7 @@ SimpleDHT11 dht11;
 
 //packet counter
 int counter = 0;
+int temperaturaAnterior, humedadAnterior;
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RST);
 
@@ -83,8 +84,6 @@ void setup() {
 
 void loop() {
   
-
-
  // read with raw sample datos.
   byte temperature = 0;
   byte humidity = 0;
@@ -96,6 +95,7 @@ void loop() {
    display.display();
    
     delay(1000);
+  
   if (dht11.read(pinDHT11, &temperature, &humidity, datas)) {
     display.clearDisplay();
     display.setCursor(0,0);
@@ -104,39 +104,32 @@ void loop() {
     return;
   }
 
-  //dht11.read(pinDHT11, &temperature, &humidity, datas);
-  display.clearDisplay();
-  display.setCursor(0,0);
-  display.println("LORA SENDER");
-  display.setCursor(0,20);
-  display.setTextSize(1);
-  display.print((int)temperature); display.print("*C, ");
-    
-  display.setCursor(0,30);
-  display.print((int)humidity); display.println(" %");
-  display.display();
-  
-  // LoRa Send packet
-  LoRa.beginPacket();
-  LoRa.print(temperature);
-  LoRa.print("#");
-  LoRa.print(humidity);
-  LoRa.endPacket();
-  
-  
-//  display.clearDisplay();
-//  display.setCursor(0,0);
-//  display.println("LORA SENDER");
-//  display.setCursor(0,20);
-//  display.setTextSize(1);
-//  display.print("LoRa packet sent.");
-//  display.setCursor(0,30);
-//  display.print("Counter:");
-//  display.setCursor(50,30);
-//  display.print(counter);      
-//  display.display();
+  if( (temperaturaAnterior!= NULL && humedadAnterior!= NULL) || 
+      (temperaturaAnterior!= temperature && humedadAnterior!= humidity))
+      {
+        //dht11.read(pinDHT11, &temperature, &humidity, datas);
+        display.clearDisplay();
+        display.setCursor(0,0);
+        display.println("LORA SENDER");
+        display.setCursor(0,20);
+        display.setTextSize(1);
+        display.print((int)temperature); display.print("*C, ");
+          
+        display.setCursor(0,30);
+        display.print((int)humidity); display.println(" %");
+        display.display();
 
-  counter++;
-  
+        temperaturaAnterior =  temperature;
+        humedadAnterior = humidity;
+        
+        // LoRa Send packet
+        LoRa.beginPacket();
+        LoRa.print(temperature);
+        LoRa.print("#");
+        LoRa.print(humidity);
+        LoRa.endPacket();
+
+         counter++;
+      }  
   delay(1000);
 }

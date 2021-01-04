@@ -112,13 +112,8 @@ void loop() {
     }
        int rssi = LoRa.packetRssi();
        if(SerialBT.connected(1)){
-         if(rssiAnterior != rssi)
-         {
-  //          SerialBT.write(temperature.toInt());
             SerialBT.println(LoRaData);
-            rssiAnterior = rssi;
-            delay(10000);
-          }      
+            delay(10000);              
       }
   
     volatile char separador = '#';
