@@ -7,7 +7,7 @@ import java.util.Date;
 public class Muestra {
 
 
-    SimpleDateFormat formatter=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    SimpleDateFormat formatter=new SimpleDateFormat("yyyy-MM-dd");
     private Date fecha;
     private int temperatura;
     private int humedad;

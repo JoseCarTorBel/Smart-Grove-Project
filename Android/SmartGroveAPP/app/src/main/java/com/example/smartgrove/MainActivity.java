@@ -21,21 +21,27 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
+import java.util.Locale;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -227,19 +233,26 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<Entry>  lineEntriesTemperatura = new ArrayList<Entry>();
         ArrayList<Entry> lineEntriesHumedad = new ArrayList<Entry>();
 
-
+ //       float tiempo_referencia =  (float) datos.get(0).getFecha().getTime();
+        float tiempoOld,tiempoNew;
 
         for(int i = 0; i < datos.size(); i++) {
-              lineEntriesTemperatura.add(new Entry((float) datos.get(i).getFecha().getTime(), (float) datos.get(i).getTemperatura()));
-              lineEntriesHumedad.add(new Entry((float)datos.get(i).getFecha().getTime(), (float) datos.get(i).getHumedad()));
+
+            tiempoOld = (float) datos.get(i).getFecha().getTime();
+            lineEntriesTemperatura.add(new Entry(tiempoOld, (float) datos.get(i).getTemperatura()));
+            lineEntriesHumedad.add(new Entry(tiempoOld, (float) datos.get(i).getHumedad()));
         }
 
 
         Log.i(TAG, "Linea temperatura" + lineEntriesTemperatura.toString());
         Log.i(TAG, "Linea Humedad" + lineEntriesHumedad.toString());
 
+
         LineDataSet lineDataSetTemperatura = new LineDataSet(lineEntriesTemperatura, "Temperatura");
-        lineDataSetTemperatura.setCircleColor((int)Color.RED);
+        lineDataSetTemperatura.setCircleColor(Color.RED);
+        lineDataSetTemperatura.setValueTextColor(Color.RED);
+       // lineDataSetTemperatura.addColor(Color.RED);
+        lineDataSetTemperatura.setColor(Color.RED);
 
         LineDataSet lineDataSetHumedad = new LineDataSet(lineEntriesHumedad, "Humedad");
 
@@ -249,8 +262,16 @@ public class MainActivity extends AppCompatActivity {
         lineData.addDataSet(lineDataSetHumedad);
 
         lineChart.setData(lineData);
+        lineChart.getXAxis().setValueFormatter(new LineChartXAxisValueFormatter());
 
+    }
+}
 
-
+class LineChartXAxisValueFormatter implements IAxisValueFormatter {
+    @Override
+    public String getFormattedValue(float value, AxisBase axis) {
+        Date date = new Date((long)value);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy" , Locale.ENGLISH);
+        return sdf.format(date);
     }
 }
