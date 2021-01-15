@@ -24,7 +24,7 @@ serverMACAddress = 'F0:08:D1:C8:DB:FE'
 port = 1
 size=1024
 
-
+# Objeto que guarda la trama recibida por el esp32
 class Trama:
 	hora=""
 	temperatura=-1
@@ -63,7 +63,7 @@ while(1):
 					lcd.lcd_display_strings(str(datetime.now()), str(strData))
 					s.send("ACK\n".encode("utf-8"))
 					grupo=20
-					if(tramas%grupo==0):
+					if(tramas%grupo==0): # Esto lo hacemos para no saturar a peticiones la API ya que si no bloquea la conexion
 						aux=grupo
 						enviar=[]
 						while(aux>0):
@@ -74,25 +74,25 @@ while(1):
 
 		s.close() #fin while
 
-	except KeyboardInterrupt:
+	except KeyboardInterrupt: # Capturamos el CTRL+C para cerrar manualmente la conexion
 		logging.info(str(datetime.now())+" Raspberry> Cierro conexion (CTRL-C)")
 		lcd.lcd_display_strings(str(datetime.now()), "Cliente parado)")
 		s.close()
 		exit()
-	except ConnectionResetError: 
+	except ConnectionResetError:  # Capturamos el reset de conexion
 		logging.info(str(datetime.now())+" Raspberry> Cierro conexion")
 		lcd.lcd_display_strings(str(datetime.now()), "Cierro conexion")
-	except ConnectionRefusedError:
+	except ConnectionRefusedError:# Capturamos el refused para que siga el bucle
 		s.close()
 		logging.info(str(datetime.now())+" Raspberry> Fallo")
 		lcd.lcd_display_strings(str(datetime.now()), "Fallo")
 		time.sleep(5)
-	except TimeoutError:
+	except TimeoutError:# Es posible que de timeoout conection
 		s.close()
 		logging.info(str(datetime.now())+" Raspberry> Fallo")
 		lcd.lcd_display_strings(str(datetime.now()), "Fallo")
 		time.sleep(5) 
-	except:
+	except: # Cualquier otra expecion abortara la ejecucion del programa
 		lcd.lcd_display_strings(str(datetime.now()), "ERROR-> LOG")
 		raise
 

@@ -6,7 +6,7 @@ import java.util.Date;
 
 public class Muestra {
 
-
+    // Usamos el formateador para obtener la fecha
     SimpleDateFormat formatter=new SimpleDateFormat("yyyy-MM-dd");
     private Date fecha;
     private int temperatura;

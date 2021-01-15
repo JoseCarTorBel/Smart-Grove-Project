@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
     private LineChart lineChart;
 
+	// URL de la hoja que actua como BBDD
     private String urlGoogle = "https://script.googleusercontent.com/macros/echo?user_content_key=hfautCUoMpL7vTfTZKvbL3tP2Kbnt12m-G4bYscxlI_V81lEcHYLi440z9Gwv0fP65Xs_1Honef3-N-r-I47Skg6RWzFXbZ4m5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnBFiRF860KCpoZ4E0XPSsTar_QXW9Bz817n-n-h8NY7IYJnhzk8SktW1HxiHj3sYOiannw6BiFb7&lib=MaI25Xl4VUYQKa9FPNAK_RnOWC6KqnnsA";
     private TextView recibido;
     private Button descargar;
@@ -83,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
         lineChart = findViewById(R.id.lineChart);
     }
 
+    // ------------------------- PICKER DE FECHA -------------------------------------
     public void onClickFechaInicio(View view){
         showDatePickerDialogInicio();
     }
@@ -117,7 +119,10 @@ public class MainActivity extends AppCompatActivity {
 
         newFragment.show(this.getSupportFragmentManager(), "datePicker");
     }
+    // ------------------------- FIN PICKER DE FECHA -------------------------------------
 
+
+    // ------------------------- QUERY AL API GOOGLE -------------------------------------
     private void stringRequest(){
         StringRequest request = new StringRequest(
                 Request.Method.GET,
@@ -190,7 +195,9 @@ public class MainActivity extends AppCompatActivity {
         barraProgreso.setProgress(30);
     }
 
+    // ------------------------- FIN QUERY AL API GOOGLE -------------------------------------
 
+    // ------------------------- METODOS AUXILIARES -------------------------------------
     public void muestraDatos(){
 
         recibido.setText("");
@@ -216,7 +223,9 @@ public class MainActivity extends AppCompatActivity {
         }
         return lista;
     }
+// ------------------------- FIN METODOS AUXILIARES -------------------------------------
 
+// ------------------------- METODOS GRAFICA -------------------------------------
     public void onClickDescargarDatos(View view){
         barraProgreso.setProgress(10);
         jsonArrayRequest();
@@ -269,3 +278,4 @@ class LineChartXAxisValueFormatter implements IAxisValueFormatter {
         return sdf.format(date);
     }
 }
+// ------------------------- FIN METODOS GRAFICA -------------------------------------
